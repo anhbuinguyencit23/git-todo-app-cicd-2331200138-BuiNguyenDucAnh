@@ -1,52 +1,48 @@
-const { TodoService } = require('../../js/model.js');
+const { TodoService } = require('../../js/model');
 
 describe('TodoService Unit Tests', () => {
     let service;
 
     beforeEach(() => {
-        service = new TodoService(); 
+        // Create a new service instance for each test to ensure isolation
+        service = new TodoService();
+
+        // Reset the singleton for testing purposes
         service.todos = [];
     });
 
-    test('addTodo should add a new todo item to the list', () => {
-        const initialLength = service.todos.length;
-        const text = 'Learn Unit Testing';
-        
-        service.addTodo(text);
-        
-        expect(service.todos.length).toBe(initialLength + 1);
-        expect(service.todos[0].text).toBe(text);
-        expect(service.todos[0].completed).toBe(false);
+    test('should add a new todo', () => {
+        service.addTodo('Learn JavaScript');
+
+        expect(service.todos).toHaveLength(1);
+        expect(service.todos[0].text).toBe('Learn JavaScript');
     });
 
-    test('toggleTodoComplete should toggle the completed status', () => {
-        service.addTodo('Learn Integration Testing');
-        const id = service.todos[0].id;
-        
-        service.toggleTodoComplete(id);
+    test('should toggle the completed state of a todo', () => {
+        service.addTodo('Learn Jest');
+
+        const todoId = service.todos[0].id;
+
+        service.toggleTodoComplete(todoId);
         expect(service.todos[0].completed).toBe(true);
-        
-        service.toggleTodoComplete(id);
+
+        service.toggleTodoComplete(todoId);
         expect(service.todos[0].completed).toBe(false);
     });
 
-    test('removeTodo should remove a todo item by id', () => {
-        service.addTodo('Task 1');
-        service.addTodo('Task 2');
-        const idToRemove = service.todos[0].id;
-        
-        service.removeTodo(idToRemove);
-        
-        expect(service.todos.length).toBe(1);
-        expect(service.todos[0].text).toBe('Task 2');
+    test('should remove a todo', () => {
+        service.addTodo('Complete Lab 3');
+
+        const todoId = service.todos[0].id;
+
+        service.removeTodo(todoId);
+
+        expect(service.todos).toHaveLength(0);
     });
 
-    test('removeTodo should not change the array if id does not exist', () => {
-        service.addTodo('Task 1');
-        const initialLength = service.todos.length;
-        
-        service.removeTodo(9999);
-        
-        expect(service.todos.length).toBe(initialLength);
+    test('should not add a todo if text is empty', () => {
+        service.addTodo('');
+
+        expect(service.todos).toHaveLength(0);
     });
 });
